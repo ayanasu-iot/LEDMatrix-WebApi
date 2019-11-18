@@ -8,6 +8,7 @@ def _initMatrix():
     options.rows = 32
     options.chain_length = 1
     options.parallel = 1
+    options.led_no_hardware_pulse = 1
     options.hardware_mapping = 'regular'
     return RGBMatrix(options=options)
 

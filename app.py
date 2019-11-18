@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, send_from_directory, flash, render_template
 from werkzeug.utils import secure_filename, redirect
 from controller import *
+import subprocess
 
 UPLOAD_FOLDER = './uploads'
 app = Flask(__name__)
@@ -22,7 +23,8 @@ def upload_image():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             image_path = app.config['UPLOAD_FOLDER'] + '/' + filename
-            controller.showImage(image_path)
+            #controller.showImage(image_path)
+            subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-slowdown-gpio=2'])
             return redirect(request.url)
     return render_template('index.html')
 
@@ -33,4 +35,4 @@ def uploaded_file(filename):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')

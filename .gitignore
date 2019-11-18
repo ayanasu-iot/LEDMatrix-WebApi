@@ -9,7 +9,7 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
-
+uploads/*
 # Generated files
 .idea/**/contentModel.xml
 
@@ -207,7 +207,7 @@ dmypy.json
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
 
 # Thumbnails
 ._*
