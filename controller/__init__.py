@@ -1,4 +1,2 @@
-from flask import Flask
-from controller import controller
-
-app = Flask(__name__)
+from controller.controller import *
+from controller.upload import *
