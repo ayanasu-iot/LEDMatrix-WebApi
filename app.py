@@ -4,7 +4,9 @@ from werkzeug.utils import secure_filename, redirect
 from controller import *
 import subprocess
 
+UPLOAD_FOLDER = './uploads'
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 @app.route('/', methods=['GET', 'POST'])
