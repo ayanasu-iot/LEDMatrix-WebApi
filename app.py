@@ -24,7 +24,7 @@ def upload_image():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             image_path = app.config['UPLOAD_FOLDER'] + '/' + filename
             #controller.showImage(image_path)
-            subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-no-hardware-pulse'])
+            subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-slowdown-gpio=2'])
             return redirect(request.url)
     return render_template('index.html')
 
