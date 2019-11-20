@@ -10,11 +10,28 @@
         <h1>
             Upload image
         </h1>
-        <form method=post enctype = multipart/form-data>
+        <label>
+            Host:
+            <input type="text" id="server_url">
+        </label>
+        <form id="form_data">
             <p>
-                <input type=file name=file>
-                <input type=submit value=Upload>
+                <input type="file" id="post_param">
+                <button type="button" onclick="file_upload(document.getElementById('server_url').value)">アップロード</button>
             </p>
         </form>
     </body>
+    <script>
+        function file_upload(url) {
+            const form_data = new FormData(document.getElementById("form_data"));
+            const req = new XMLHttpRequest();
+            req.onreadystatechange = function() {
+                if (req.readyState === req.DONE && req.status === 200) {
+                    console.log("Uploaded OK.");
+                }
+            };
+            req.open("POST", "http://"+url, true);
+            req.send(form_data);
+        }
+    </script>
 </html>

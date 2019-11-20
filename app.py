@@ -1,12 +1,15 @@
 import os
 from flask import Flask, request, send_from_directory, flash, render_template
+from flask_cors import CORS
 from werkzeug.utils import secure_filename, redirect
-from controller import *
+from controller import allowed_file
 import subprocess
 
 UPLOAD_FOLDER = './uploads'
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = 'hogehoge'
+CORS(app)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -23,9 +26,8 @@ def upload_image():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             image_path = app.config['UPLOAD_FOLDER'] + '/' + filename
-            #controller.showImage(image_path)
             subprocess.run(['killall', 'led-image-viewe'])
-            subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-slowdown-gpio=2', '--led-chain=4', '--led-parallel=2'])
+            subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-slowdown-gpio=2'])
             return redirect(request.url)
     return render_template('index.html')
 
