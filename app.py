@@ -1,7 +1,7 @@
 import os
-from flask import Flask, request, send_from_directory, flash, render_template
+from flask import Flask, request, flash, render_template
 from flask_cors import CORS
-from werkzeug.utils import secure_filename, redirect
+from werkzeug.utils import secure_filename
 from controller import allowed_file
 import subprocess
 
@@ -12,29 +12,25 @@ app.secret_key = 'hogehoge'
 CORS(app)
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
 def upload_image():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('ファイルがありません')
-            return redirect(request.url)
-        file = request.files['file']
-        if file.filename == '':
-            flash('ファイルがありません')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            image_path = app.config['UPLOAD_FOLDER'] + '/' + filename
-            subprocess.run(['killall', 'led-image-viewe'])
-            subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-slowdown-gpio=2'])
-            return redirect(request.url)
     return render_template('index.html')
 
 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+@app.route('/upload', methods=['GET', 'POST'])
+def uploaded_file():
+    print(request.files)
+    if 'file' not in request.files:
+        flash('ファイルがありません')
+    file = request.files['file']
+    if file.filename == '':
+        flash('ファイルがありません')
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        image_path = app.config['UPLOAD_FOLDER'] + '/' + filename
+        subprocess.run(['killall', 'led-image-viewe'])
+        subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-slowdown-gpio=2'])
 
 
 if __name__ == '__main__':

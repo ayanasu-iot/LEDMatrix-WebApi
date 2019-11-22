@@ -14,24 +14,24 @@
             Host:
             <input type="text" id="server_url">
         </label>
-        <form id="form_data">
-            <p>
-                <input type="file" id="post_param">
-                <button type="button" onclick="file_upload(document.getElementById('server_url').value)">アップロード</button>
-            </p>
+        <form id="form_data" name="file" enctype="multipart/form-data">
+            <input type="file" id="file" name="file" onchange="file_upload()">
+            <p id="uploader-status"></p>
         </form>
     </body>
+    <script src="http://code.jquery.com/jquery-3.3.1.js"></script>
     <script>
-        function file_upload(url) {
-            const form_data = new FormData(document.getElementById("form_data"));
-            const req = new XMLHttpRequest();
-            req.onreadystatechange = function() {
-                if (req.readyState === req.DONE && req.status === 200) {
-                    console.log("Uploaded OK.");
-                }
-            };
-            req.open("POST", "http://"+url, true);
-            req.send(form_data);
+        function file_upload() {
+            const url = 'http://' + document.getElementById('server_url').value;
+            const formData = new FormData();
+            formData.append('file', $('input[type=file]')[0].files[0]);
+            $.ajax({
+                url: url,
+                data: formData,
+                type: 'POST',
+                contentType: false,
+                processData: false,
+            });
         }
     </script>
 </html>
