@@ -14,7 +14,7 @@ CORS(app)
 
 @app.route('/', methods=['GET'])
 def upload_image():
-    return render_template('index.html')
+    return "Hello, World!"
 
 
 @app.route('/upload', methods=['GET', 'POST'])
