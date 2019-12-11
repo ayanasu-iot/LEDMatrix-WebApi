@@ -1,1 +1,1 @@
-from controller.upload import *
+from controller.file_extensions import *

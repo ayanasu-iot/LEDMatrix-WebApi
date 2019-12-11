@@ -1,37 +1,40 @@
-import os
-from flask import Flask, request, flash, render_template
-from flask_cors import CORS
+import responder
 from werkzeug.utils import secure_filename
 from controller import allowed_file
 import subprocess
 
-UPLOAD_FOLDER = './uploads'
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = 'hogehoge'
-CORS(app)
+UPLOAD_FOLDER = './uploads/'
+api = responder.API(cors=True, cors_params={
+    'allow_origins': ['*'],
+    'allow_methods': ['*'],
+    'allow_headers': ['*'],
+})
 
 
-@app.route('/', methods=['GET'])
-def upload_image():
-    return "Hello, World!"
+@api.route('/')
+def upload_image(req, resp):
+    if req.method == "get":
+        resp.text = "Hello World"
 
 
-@app.route('/upload', methods=['GET', 'POST'])
-def uploaded_file():
-    print(request.files)
-    if 'file' not in request.files:
-        flash('ファイルがありません')
-    file = request.files['file']
-    if file.filename == '':
-        flash('ファイルがありません')
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        image_path = app.config['UPLOAD_FOLDER'] + '/' + filename
-        subprocess.run(['killall', 'led-image-viewe'])
-        subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-slowdown-gpio=2'])
-
+@api.route('/upload')
+async def uploaded_file(req, resp):
+    if req.method == 'post':
+        data = await req.media(format='files')
+        if data['file'] and allowed_file(data['file']['filename']):
+            subprocess.run(['killall', 'led-image-viewe'])
+            @api.background.task
+            def process_file(file):
+                filename = secure_filename(file['file']['filename'])
+                print(filename)
+                image_path = UPLOAD_FOLDER + filename
+                with open(image_path, 'wb') as f:
+                    f.write(file['file']['content'])
+                subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-slowdown-gpio=2'])
+        process_file(data)
+        resp.status_code = api.status_codes.HTTP_200
+    elif req.method != 'post':
+        resp.status_code = api.status_codes.HTTP_405
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    api.run(debug=True, address='0.0.0.0', port=5000)
