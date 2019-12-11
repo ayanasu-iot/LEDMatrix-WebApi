@@ -26,13 +26,14 @@ async def uploaded_file(req, resp):
             @api.background.task
             def process_file(file):
                 filename = secure_filename(file['file']['filename'])
-                print(filename)
                 image_path = UPLOAD_FOLDER + filename
                 with open(image_path, 'wb') as f:
                     f.write(file['file']['content'])
                 subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-slowdown-gpio=2'])
         process_file(data)
         resp.status_code = api.status_codes.HTTP_200
+        resp.media = {'success': 'ok'}
+
     elif req.method != 'post':
         resp.status_code = api.status_codes.HTTP_405
 
