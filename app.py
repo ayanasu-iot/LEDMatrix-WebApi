@@ -44,10 +44,10 @@ def changeAnimation(req, resp):
         status = req.params.get("status", "")
         print(status)
         if status == 'true':
-            subprocess.call('sudo systemctl start ledTest.service')
+            subprocess.call('systemctl start ledTest.service')
             resp.status_code = api.status_codes.HTTP_200
         elif status == 'false':
-            subprocess.run('sudo systemctl stop ledTest.service')
+            subprocess.call('systemctl stop ledTest.service')
             resp.status_code = api.status_codes.HTTP_200
 
 
