@@ -42,11 +42,12 @@ async def uploaded_file(req, resp):
 def changeAnimation(req, resp):
     if req.method == 'get':
         status = req.params.get("status", "")
-        if status:
-            subprocess.run(['systemctl', 'start', 'ledTest.service'])
+        print(status)
+        if status == 'true':
+            subprocess.call('sudo systemctl start ledTest.service')
             resp.status_code = api.status_codes.HTTP_200
-        elif not status:
-            subprocess.run(['systemctl', 'stop', 'ledTest.service'])
+        elif status == 'false':
+            subprocess.run('sudo systemctl stop ledTest.service')
             resp.status_code = api.status_codes.HTTP_200
 
 
