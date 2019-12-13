@@ -17,7 +17,7 @@ def upload_image(req, resp):
         resp.text = "Hello World"
 
 
-@api.route('/upload')
+@api.route('/api/v1/upload')
 async def uploaded_file(req, resp):
     if req.method == 'post':
         data = await req.media(format='files')
@@ -36,6 +36,19 @@ async def uploaded_file(req, resp):
 
     elif req.method != 'post':
         resp.status_code = api.status_codes.HTTP_405
+
+
+@api.route('/api/v1/animation')
+def changeAnimation(req, resp):
+    if req.method == 'get':
+        status = req.params.get("status", "")
+        if status:
+            subprocess.run(['systemctl', 'start', 'ledTest.service'])
+            resp.status_code = api.status_codes.HTTP_200
+        elif not status:
+            subprocess.run(['systemctl', 'stop', 'ledTest.service'])
+            resp.status_code = api.status_codes.HTTP_200
+
 
 if __name__ == '__main__':
     api.run(debug=True, address='0.0.0.0', port=5000)
