@@ -1,6 +1,10 @@
+import subprocess
 from pathlib import Path
 from itertools import chain
+from werkzeug.utils import secure_filename
+
 import models
+from app import api
 
 
 def allowed_file(filename):
@@ -15,3 +19,12 @@ def get_pictures(filepath):
     gif_files = gen.__next__()
     result = chain(png_files, jpg_files, gif_files)
     return [str(i) for i in result]
+
+
+@api.background.task
+def show_image(file):
+    filename = secure_filename(file['file']['filename'])
+    image_path = models.UPLOAD_FOLDER + filename
+    with open(image_path, 'wb') as f:
+        f.write(file['file']['content'])
+    subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-slowdown-gpio=2'])
