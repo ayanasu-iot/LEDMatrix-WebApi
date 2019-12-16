@@ -1,7 +1,8 @@
 import responder
 from werkzeug.utils import secure_filename
-from controller import allowed_file
+import controller
 import subprocess
+import json
 
 UPLOAD_FOLDER = './uploads/'
 api = responder.API(cors=True, cors_params={
@@ -21,7 +22,7 @@ def upload_image(req, resp):
 async def uploaded_file(req, resp):
     if req.method == 'post':
         data = await req.media(format='files')
-        if data['file'] and allowed_file(data['file']['filename']):
+        if data['file'] and controller.allowed_file(data['file']['filename']):
             subprocess.run(['killall', 'led-image-viewe'])
             @api.background.task
             def process_file(file):
@@ -42,13 +43,20 @@ async def uploaded_file(req, resp):
 def changeAnimation(req, resp):
     if req.method == 'get':
         status = req.params.get("status", "")
-        print(status)
         if status == 'true':
             subprocess.call('systemctl start ledTest.service')
             resp.status_code = api.status_codes.HTTP_200
         elif status == 'false':
             subprocess.call('systemctl stop ledTest.service')
             resp.status_code = api.status_codes.HTTP_200
+
+
+@api.route('/api/v1/pictures')
+def getPicturesList(req, resp):
+    if req.method == 'get':
+        picture_list = {"pictures": controller.get_pictures('./uploads/')}
+        resp.headers = {"Content-Type": "application/json; charset=utf-8"}
+        resp.content = json.dumps(picture_list, ensure_ascii=False)
 
 
 if __name__ == '__main__':
