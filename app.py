@@ -1,10 +1,8 @@
 import responder
-from werkzeug.utils import secure_filename
 import controller
 import subprocess
 import json
 
-UPLOAD_FOLDER = './uploads/'
 api = responder.API(cors=True, cors_params={
     'allow_origins': ['*'],
     'allow_methods': ['*'],
@@ -24,14 +22,7 @@ async def uploaded_file(req, resp):
         data = await req.media(format='files')
         if data['file'] and controller.allowed_file(data['file']['filename']):
             subprocess.run(['killall', 'led-image-viewe'])
-            @api.background.task
-            def process_file(file):
-                filename = secure_filename(file['file']['filename'])
-                image_path = UPLOAD_FOLDER + filename
-                with open(image_path, 'wb') as f:
-                    f.write(file['file']['content'])
-                subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-slowdown-gpio=2'])
-        process_file(data)
+        controller.show_image(data)
         resp.status_code = api.status_codes.HTTP_200
         resp.media = {'success': 'ok'}
 
@@ -57,6 +48,27 @@ def getPicturesList(req, resp):
         picture_list = {"pictures": controller.get_pictures('./uploads/')}
         resp.headers = {"Content-Type": "application/json; charset=utf-8"}
         resp.content = json.dumps(picture_list, ensure_ascii=False)
+
+
+@api.route('/api/v1/face')
+def emotionPattern(req, resp):
+    if req.method == 'get':
+        emotion = req.params.get("emotion", "")
+        if emotion == "anger":
+            controller.show_image(None)
+            resp.status_code = api.status_codes.HTTP_200
+        elif emotion == "happiness":
+            controller.show_image(None)
+            resp.status_code = api.status_codes.HTTP_200
+        elif emotion == "neutral":
+            controller.show_image(None)
+            resp.status_code = api.status_codes.HTTP_200
+        elif emotion == "sadness":
+            controller.show_image(None)
+            resp.status_code = api.status_codes.HTTP_200
+        elif emotion == "surprise":
+            controller.show_image(None)
+            resp.status_code = api.status_codes.HTTP_200
 
 
 if __name__ == '__main__':
