@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import responder
 import controller
 import subprocess
@@ -57,15 +55,6 @@ def emotionPattern(req, resp):
     if req.method == 'get':
         emotion = req.params.get("emotion", "")
         if emotion == "anger":
-            controller.show_image(None)
-            resp.status_code = api.status_codes.HTTP_200
-        elif emotion == "contempt":
-            controller.show_image(None)
-            resp.status_code = api.status_codes.HTTP_200
-        elif emotion == "disgust":
-            controller.show_image(None)
-            resp.status_code = api.status_codes.HTTP_200
-        elif emotion == "fear":
             controller.show_image(None)
             resp.status_code = api.status_codes.HTTP_200
         elif emotion == "happiness":

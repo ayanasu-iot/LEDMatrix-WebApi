@@ -1,2 +1,2 @@
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'gif'])
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'gif'}
 UPLOAD_FOLDER = './uploads/'
