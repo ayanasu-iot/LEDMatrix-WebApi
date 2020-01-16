@@ -28,3 +28,9 @@ def show_image(file):
     with open(image_path, 'wb') as f:
         f.write(file['file']['content'])
     subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-slowdown-gpio=2'])
+
+
+@api.background.task
+def display_emotion(filename):
+    image_path = models.STATIC_FOLDER + filename
+    subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-slowdown-gpio=2'])

@@ -54,21 +54,20 @@ def getPicturesList(req, resp):
 def emotionPattern(req, resp):
     if req.method == 'get':
         emotion = req.params.get("emotion", "")
-        display = controller.samplebase.SampleBase()
         if emotion == "anger":
-            display.display_color(243, 11, 10)
+            controller.display_emotion('anger.gif')
             resp.status_code = api.status_codes.HTTP_200
         elif emotion == "happiness":
-            display.display_color(249, 189, 30)
+            controller.display_emotion('happiness.gif')
             resp.status_code = api.status_codes.HTTP_200
         elif emotion == "neutral":
-            display.display_color(124, 176, 60)
+            controller.display_emotion('neutral.gif')
             resp.status_code = api.status_codes.HTTP_200
         elif emotion == "sadness":
-            display.display_color(45, 169, 238)
+            controller.display_emotion('sadness.gif')
             resp.status_code = api.status_codes.HTTP_200
         elif emotion == "surprise":
-            display.display_color(119, 58, 162)
+            controller.display_emotion('surprise.gif')
             resp.status_code = api.status_codes.HTTP_200
 
 
