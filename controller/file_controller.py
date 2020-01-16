@@ -32,5 +32,6 @@ def show_image(file):
 
 @api.background.task
 def display_emotion(filename):
+    subprocess.run(['killall', 'led-image-viewe'])
     image_path = models.STATIC_FOLDER + filename
     subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-slowdown-gpio=2'])
