@@ -55,19 +55,19 @@ def emotionPattern(req, resp):
     if req.method == 'get':
         emotion = req.params.get("emotion", "")
         if emotion == "anger":
-            controller.show_image(None)
+            controller.display_emotion('anger.gif')
             resp.status_code = api.status_codes.HTTP_200
         elif emotion == "happiness":
-            controller.show_image(None)
+            controller.display_emotion('happiness.gif')
             resp.status_code = api.status_codes.HTTP_200
         elif emotion == "neutral":
-            controller.show_image(None)
+            controller.display_emotion('neutral.gif')
             resp.status_code = api.status_codes.HTTP_200
         elif emotion == "sadness":
-            controller.show_image(None)
+            controller.display_emotion('sadness.gif')
             resp.status_code = api.status_codes.HTTP_200
         elif emotion == "surprise":
-            controller.show_image(None)
+            controller.display_emotion('surprise.gif')
             resp.status_code = api.status_codes.HTTP_200
 
 
