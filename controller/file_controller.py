@@ -1,4 +1,5 @@
 import subprocess
+import time
 from pathlib import Path
 from itertools import chain
 from werkzeug.utils import secure_filename
@@ -27,6 +28,7 @@ def show_image(file):
     image_path = models.UPLOAD_FOLDER + filename
     with open(image_path, 'wb') as f:
         f.write(file['file']['content'])
+    time.sleep(2)
     subprocess.run(['/usr/local/bin/led-image-viewer', image_path, '--led-slowdown-gpio=2'])
 
 
